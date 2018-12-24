@@ -2,62 +2,87 @@ function escapeRegExp(string) {
     return string.replace(/[\.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function getSelectedText(){
-    return window.getSelection().toString();
+function getSelectedTextObject(){
+    return window.getSelection()
 }
 
-function highlight(selectedtext){
-    $('body').html(function(index,html){
+function getSelectedText(){
+    return getSelectedTextObject().toString();
+}
+function getSelectedTextParentElement(){
+    if(getSelectedText()) return getSelectedTextObject().anchorNode.parentNode
+}
+
+function highlight(parent, selectedtext){
+    $(parent).html(function(index,html){
         var p = escapeRegExp(selectedtext);
         var regex = new RegExp(p, "");
         var k = html.replace(regex, `<mark style="background-color:yellow">${selectedtext}</mark>`);
-        console.log(k)
         return k;
     });
 }
 
-function highlighterCaller(){
-    console.log("asdfsdaf")
-    highlight(getSelectedText())
+function highlighterValidator(parent, content){
+    if (content && content.length > 0){
+        return true
+    }else{
+        return false
+    }
 }
+
+function highlighterCaller(){
+    let parent = getSelectedTextParentElement()
+    let content = getSelectedText()
+    if(highlighterValidator(parent, content))
+        highlight(parent, getSelectedText())
+}
+
 function highlighterButtonPressed(event){
-    event.preventDefault()
-    highlighterCaller()
+    console.log("presed")
+    highlighterCaller();
     highlighterButtonHide();
 }
 
+function unselectSelectedText(){
+    return window.getSelection().removeAllRanges();
+}
 function highlighterButtonHide(){
     $("#customhighlightbutton").css("display", "none");
 }
 
 function positionbutton(){
     let hightlightImgUrl = chrome.runtime.getURL("website/highlighter.png")
-    $('body').append(`<div id="customhighlightbutton" class="customhighlightbutton" alt="asdf"></div>`);
-
+    $('body').append(`<img id="customhighlightbutton" class="customhighlightbutton" />`);
+    $("#customhighlightbutton").attr("src", hightlightImgUrl);
+    
     $(document).ready(function () {
-        $("div#customhighlightbutton").on("click",highlighterButtonPressed)
-        $('body:not(div#customhighlightbutton)').on("mouseup", function(event){
-            event.preventDefault()
+        $('body').bind("mouseup", function(event){
             text = getSelectedText();
             if(text && text.length > 0){
                 let x = event.pageX-13;
-                let y = event.pageY-50;
+                let y = event.pageY-30;
                 $("#customhighlightbutton").css("left", x);
                 $("#customhighlightbutton").css("top", y);
                 $("#customhighlightbutton").css("display", "block");
             }
         })
-        // $('body:not(#customhighlightbutton)').mousedown(function(){
-            //     console.log("down")
-            //     window.getSelection().removeAllRanges();
-            //     highlighterButtonHide()
-        // })
+
+        // $('body:not(img#customhighlightbutton)').bind("mousedown", function(){
+        //     console.log("down")
+        //     // setTimeout(function(){
+        //         //     console.log("df")
+        //         unselectSelectedText();
+        //         highlighterButtonHide();
+        //         // },1)
+        //     })
+        $("body img#customhighlightbutton").bind("click",highlighterButtonPressed)
+        
     })
 }
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        highlight(request.content);
+        highlighterCaller();
         sendResponse();
 });
-//positionbutton()
+positionbutton()
