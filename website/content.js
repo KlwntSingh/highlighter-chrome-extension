@@ -38,7 +38,6 @@ function highlighterCaller(){
 }
 
 function highlighterButtonPressed(event){
-    console.log("presed")
     highlighterCaller();
     highlighterButtonHide();
 }
@@ -54,7 +53,7 @@ function positionbutton(){
     let hightlightImgUrl = chrome.runtime.getURL("website/highlighter.png")
     $('body').append(`<img id="customhighlightbutton" class="customhighlightbutton" />`);
     $("#customhighlightbutton").attr("src", hightlightImgUrl);
-    
+
     $(document).ready(function () {
         $('body').bind("mouseup", function(event){
             text = getSelectedText();

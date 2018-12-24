@@ -1,7 +1,7 @@
 {
-    "name": "highlighter",
+    "name": "Highlighter",
     "version": "1.0",
-    "description": "highlighting the text in webpage for session",
+    "description": "Highlighting the text in webpage for session",
     "permissions": ["tabs", "activeTab", "contextMenus"],
     "background": {
         "scripts": ["background.js"]
