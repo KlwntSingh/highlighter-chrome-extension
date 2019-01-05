@@ -5,16 +5,13 @@ function escapeRegExp(string) {
 function genericOnClick(info, tab) {
   var selectedtext = info.selectionText;
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id,{content: selectedtext}, function(response) {
-  });});
-
+    chrome.tabs.sendMessage(tabs[0].id,{content: selectedtext}, function(response) {});
+  });
 }
 
 var contexts = ["selection"];
 for (var i = 0; i < contexts.length; i++) {
   var context = contexts[i];
   var title = "Highlighter";
-  var id = chrome.contextMenus.create({"title": title, "contexts":[context],
-  "onclick": genericOnClick});
+  var id = chrome.contextMenus.create({"title": title, "contexts": [context], "onclick": genericOnClick});
 }
-  

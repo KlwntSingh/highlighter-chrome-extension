@@ -63,6 +63,8 @@ function positionbutton(){
                 $("#customhighlightbutton").css("left", x);
                 $("#customhighlightbutton").css("top", y);
                 $("#customhighlightbutton").css("display", "block");
+            }else{
+                $("#customhighlightbutton").css("display", "none");
             }
         })
 
